@@ -32,22 +32,39 @@ export default function authenticate() {
             })
     }
     return (
-        <CardGroup className="d-flex">
-            <Card>
-                <Card.Body>
-                    <Card.Img variant="top" src="https://algogems.io/img/myalgo.6079b807.png" />
-                </Card.Body>
-            </Card>
-            <Card>
-                <Card.Body onClick={connectWallet}>
-                    <Card.Img variant="top" src="https://algogems.io/img/algosigner.2b02c885.png" />
-                </Card.Body>
-            </Card>
-            <Card>
-                <Card.Body>
-                    <Card.Img variant="top" src="https://algogems.io/img/algowallet.0ed6463a.svg" />
-                </Card.Body>
-            </Card>
-        </CardGroup>
-    )
+        <React.Fragment>
+            {
+                address && address.length  > 0 &&  address.map(addr => {
+                    return (
+                        <Card>
+                            <Card.Body>
+                                {addr.address}
+                            </Card.Body>
+                        </Card>
+                    )
+                })          
+            }
+            {
+                address && address.length === 0 &&
+                <CardGroup className="d-flex">
+                    <Card>
+                        <Card.Body>
+                            <Card.Img variant="top" src="https://algogems.io/img/myalgo.6079b807.png" />
+                        </Card.Body>
+                    </Card>
+                    <Card>
+                        <Card.Body onClick={connectWallet}>
+                            <Card.Img variant="top" src="https://algogems.io/img/algosigner.2b02c885.png" />
+                        </Card.Body>
+                    </Card>
+                    <Card>
+                        <Card.Body>
+                            <Card.Img variant="top" src="https://algogems.io/img/algowallet.0ed6463a.svg" />
+                        </Card.Body>
+                    </Card>
+                </CardGroup>
+
+            }
+            </React.Fragment>
+         )
 }
