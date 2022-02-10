@@ -57,17 +57,17 @@ export default function authenticate() {
                 <CardGroup className="d-flex">
                     <Card>
                         <Card.Body>
-                            <Card.Img variant="top" src="https://algogems.io/img/myalgo.6079b807.png" />
+                            <Card.Img src="https://algogems.io/img/myalgo.6079b807.png" />
                         </Card.Body>
                     </Card>
                     <Card>
                         <Card.Body onClick={connectWallet}>
-                            <Card.Img variant="top" src="https://algogems.io/img/algosigner.2b02c885.png" />
+                            <Card.Img src="https://algogems.io/img/algosigner.2b02c885.png" />
                         </Card.Body>
                     </Card>
                     <Card>
                         <Card.Body>
-                            <Card.Img variant="top" src="https://algogems.io/img/algowallet.0ed6463a.svg" />
+                            <Card.Img src="https://algogems.io/img/algowallet.0ed6463a.svg" />
                         </Card.Body>
                     </Card>
                 </CardGroup>
