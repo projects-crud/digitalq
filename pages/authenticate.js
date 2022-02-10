@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { CardGroup, Card } from 'react-bootstrap'
+import { useRouter } from "next/router";
+
 export default function authenticate() {
     const [address, setAddress] = useState([]);
+    const history = useRouter();
 
     const connectWallet = (address) => {
         let _AlgoSigner = AlgoSigner || null
@@ -31,12 +34,17 @@ export default function authenticate() {
                 console.error('error...', e)
             })
     }
+
+    const navigateToDahboard = (address) => {
+        localStorage.setItem('digitalQAddr', address);
+        history.push('/dashboard');
+    }
     return (
         <React.Fragment>
             {
                 address && address.length  > 0 &&  address.map(addr => {
                     return (
-                        <Card>
+                        <Card onClick={() => navigateToDahboard(addr)}>
                             <Card.Body>
                                 {addr.address}
                             </Card.Body>
