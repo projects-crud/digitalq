@@ -1,15 +1,20 @@
 import React, {useState, useEffect} from 'react'
+import axios from 'axios';
+import algosdk from 'algosdk';
 
 export default function dashboard() {
     const [assets, setAssets] = useState([])
     const [amount, setAmount] = useState(0)
     const [address, setAddress] = useState('')
+    const [createdAssets, setCreatedAssets] = useState([])
+    const [txParamsJS, setTxParamsJS] = useState()
+
     useEffect(() => {
         getAssets();
     }, [])
-    const address = localStorage.getItem('digitalQAddr');
     const getAssets = () => {
-        axios.get(`${GET_ASSETS}/${address}`).then((response) => {
+        const addressId = window.localStorage.getItem('digitalQAddr');
+        axios.get(`https://api.testnet.algoexplorer.io/v2/accounts/${addressId}`).then((response) => {
             const { assets, amount, address } = response.data
             setupSDK()
             setAssets(assets)
@@ -52,9 +57,13 @@ export default function dashboard() {
                 console.error(e)
             })
     }
+
+    const createAsset = () => {
+        
+    }
     return (
         <div>
-            
+            <button onClick={createAsset}>Create</button>
         </div>
     )
 }

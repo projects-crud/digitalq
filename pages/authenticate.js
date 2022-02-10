@@ -44,7 +44,7 @@ export default function authenticate() {
             {
                 address && address.length  > 0 &&  address.map(addr => {
                     return (
-                        <Card onClick={() => navigateToDahboard(addr)}>
+                        <Card onClick={() => navigateToDahboard(addr.address)}>
                             <Card.Body>
                                 {addr.address}
                             </Card.Body>
