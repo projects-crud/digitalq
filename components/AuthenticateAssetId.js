@@ -13,14 +13,15 @@ import {
 import Banner from "../images/banner.svg";
 import path from "../images/path.svg";
 import { useRouter } from "next/router";
+import algosdk from "algosdk";
 
-export default function AuthenticateCode({address}) {
-    console.log("address",address);
-    const history = useRouter()
-    const navigateToDahboard = (address) => {
-        localStorage.setItem('digitalQAddr', address);
-        history.push('/dashboard');
-    }
+export default function AuthenticateCode({ address }) {
+  console.log("address", address);
+  const history = useRouter();
+  const navigateToDahboard = (address) => {
+    localStorage.setItem("digitalQAddr", address);
+    history.push("/dashboard");
+  };
 
   return (
     <div>
@@ -45,18 +46,23 @@ export default function AuthenticateCode({address}) {
 
       <section>
         <Container>
-          <h4 className="text-center mb-4 mt-5" >
+          <h4 className="text-center mb-4 mt-5">
             Select the address to use to authenticate
           </h4>
           <Row>
             <Col>
-            {address && address.length  > 0 &&  address.map(addr => (
-              <Card body className="cus-card">
-                <h5 className="assetId" onClick={()=>navigateToDahboard(addr.address)}>
-                  {addr.address}
-                </h5>
-              </Card>
-            ))}
+              {address &&
+                address.length > 0 &&
+                address.map((addr) => (
+                  <Card body className="cus-card">
+                    <h5
+                      className="assetId"
+                      onClick={() => navigateToDahboard(addr.address)}
+                    >
+                      {addr.address}
+                    </h5>
+                  </Card>
+                ))}
             </Col>
           </Row>
         </Container>

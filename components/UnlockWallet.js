@@ -39,12 +39,13 @@ export default function UnlockWallet() {
       <section>
         <Container>
           <Card body className="cus-card-gradient">
-          <img src="https://www.freeiconspng.com/thumbs/lock-icon/lock-icon-11.png" width="60px" height="60px"/>
+            <img
+              src="https://www.freeiconspng.com/thumbs/lock-icon/lock-icon-11.png"
+              width="60px"
+              height="60px"
+            />
             <h4>Please Unlock Your Wallet</h4>
-            <p>
-            Also, make sure to have at least
-              one address in your wallet.
-            </p>
+            <p>Also, make sure to have at least one address in your wallet.</p>
           </Card>
         </Container>
       </section>

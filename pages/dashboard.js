@@ -20,15 +20,14 @@ export default function dashboard() {
   const [address, setAddress] = useState("");
   const [createdAssets, setCreatedAssets] = useState([]);
   const [txParamsJS, setTxParamsJS] = useState();
-  const [assetId,setAssetId] = useState("")
+  const [assetId, setAssetId] = useState("");
   const [fileName, setFileName] = useState("");
   const [formState, setFormState] = useState(true);
 
   useEffect(() => {
     const addressId = window.localStorage.getItem("digitalQAddr");
-    setAssetId(addressId)
+    setAssetId(addressId);
     getAssets();
-
   }, [assetId]);
   const getAssets = () => {
     const addressId = window.localStorage.getItem("digitalQAddr");
@@ -78,29 +77,67 @@ export default function dashboard() {
       });
   };
 
-  const createAsset = () => {};
+  const createAsset = () => {
+    const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+
+    //we gather a local file for this example, but any valid readStream source will work here.
+    let data = new FormData();
+    data.append("file", fs.createReadStream(fileName));
+    console.log("data...", fileName);
+
+    //You'll need to make sure that the metadata is in the form of a JSON object that's been convered to a string
+    //metadata is optional
+    const metadata = JSON.stringify({
+      name: "testname",
+      keyvalues: {
+        exampleKey: "123",
+      },
+    });
+    data.append("pinataMetadata", metadata);
+
+    return axios
+      .post(url, data, {
+        maxBodyLength: "Infinity", //this is needed to prevent axios from erroring out with large files
+        headers: {
+          "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+          pinata_api_key: "ab7f3f47d6a9f9004a2e",
+          pinata_secret_api_key:
+            "8b95b1587d1f8c525464b06203d2b28f6832af5525d001814c24b9774bcf1b80",
+        },
+      })
+      .then(function (response) {
+        console.log("res", response);
+      })
+      .catch(function (error) {
+        //handle error here
+        console.error("error", error);
+      });
+  };
 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const getFileName =(e)=>{
-    setFileName(e.target.files[0])
-  }
+  const getFileName = (e) => {
+    const file = URL.createObjectURL(e.target.files[0]);
+    formik.setFieldValue("fileImage", file);
+    setFileName(file);
+  };
 
   const formik = useFormik({
     initialValues: {
+      fileImage: "",
       name: "",
       description: "",
       supply: "",
       unitPrice: "",
     },
-    onSubmit: values => {
-    //   alert(JSON.stringify(values, null, 2));
-    console.log(values);
-    //   pinToFIle()
-    }
+    onSubmit: (values) => {
+      //   alert(JSON.stringify(values, null, 2));
+      console.log(values);
+      //   pinToFIle()
+    },
   });
 
   return (
@@ -130,9 +167,7 @@ export default function dashboard() {
             <Col md={{ span: 8, offset: 2 }}>
               <h5 className="mb-4 mt-5">Your authenticate address</h5>
               <Card body className="cus-card">
-                <h5>
-                  {assetId}
-                </h5>
+                <h5>{assetId}</h5>
               </Card>
             </Col>
           </Row>
@@ -278,25 +313,26 @@ export default function dashboard() {
           </Row>
         </Container>
       </section>
-      {/* 
-      <button onClick={createAsset}>Create</button> */}
 
       <Offcanvas show={show} onHide={handleClose} placement="end">
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Create Assets</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <div class="box js mb-4">
+          <div className="box js mb-4">
             <img
               className="placeholder-img"
-              src="https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640"
+              src={
+                formik.values.fileImage ||
+                "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640"
+              }
             />
 
             <input
               type="file"
               name="file-1[]"
               id="file-1"
-              class="inputfile inputfile-1"
+              className="inputfile inputfile-1"
               data-multiple-caption="{count} files selected"
               multiple=""
               onChange={getFileName}
@@ -313,46 +349,60 @@ export default function dashboard() {
               <span>Choose a file…</span>
             </label>
           </div>
+
           <Form onSubmit={formik.handleSubmit}>
-          <Form.Group controlId="name">
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Name"
-            className="mb-3"
-          >
-            <Form.Control type="text" placeholder="Enter name" name="name" onChange={formik.handleChange} value={formik.values.name}/>
-          </FloatingLabel>
+            <Form.Group controlId="name">
+              <FloatingLabel label="Name" className="mb-3">
+                <Form.Control
+                  type="text"
+                  placeholder="Enter name"
+                  name="name"
+                  onChange={formik.handleChange}
+                  value={formik.values.name}
+                />
+              </FloatingLabel>
             </Form.Group>
-        <Form.Group controlId="description">
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Description"
-            className="mb-3"
-          >
-            <Form.Control type="text" name="description" placeholder="Enter descrpition" onChange={formik.handleChange} value={formik.values.description}/>
-          </FloatingLabel>
-          </Form.Group>
-          <Form.Group controlId="supply">
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Supply"
-            className="mb-3"
-          >
-            <Form.Control type="text"  name="supply" placeholder="Enter supply" onChange={formik.handleChange} value={formik.values.supply} />
-          </FloatingLabel>
-        </Form.Group>
-        <Form.Group controlId="unitPrice">
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Unit Price"
-            className="mb-3"
-          >
-            <Form.Control type="text" name="unitPrice" placeholder="Enter nnit price" onChange={formik.handleChange} value={formik.values.unitPrice}/>
-          </FloatingLabel>
-        </Form.Group>
-          <Button className="m-auto d-block" variant="primary" onClick={values => setFormState(values)}>
-            Submit
-          </Button>
+            <Form.Group controlId="description">
+              <FloatingLabel label="Description" className="mb-3">
+                <Form.Control
+                  type="text"
+                  name="description"
+                  placeholder="Enter descrpition"
+                  onChange={formik.handleChange}
+                  value={formik.values.description}
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group controlId="supply">
+              <FloatingLabel label="Supply" className="mb-3">
+                <Form.Control
+                  type="text"
+                  name="supply"
+                  placeholder="Enter supply"
+                  onChange={formik.handleChange}
+                  value={formik.values.supply}
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group controlId="unitPrice">
+              <FloatingLabel label="Unit Price" className="mb-3">
+                <Form.Control
+                  type="text"
+                  name="unitPrice"
+                  placeholder="Enter nnit price"
+                  onChange={formik.handleChange}
+                  value={formik.values.unitPrice}
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Button
+              className="m-auto d-block"
+              variant="primary"
+              type="submit"
+              onClick={(values) => setFormState(values)}
+            >
+              Submit
+            </Button>
           </Form>
         </Offcanvas.Body>
       </Offcanvas>
